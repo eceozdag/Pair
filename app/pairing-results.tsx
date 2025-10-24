@@ -1,5 +1,6 @@
+import { foodWinePairings, wineDescriptions } from '@/constants/pairings';
 import Colors from '../constants/colors';
-import { foodWinePairings, wineDescriptions } from '../constants/pairings';
+
 import { useApp } from '../contexts/AppContext';
 import { findWinePairings, findFoodPairings, getWineDetails } from '../utils/matchingLogic';
 // import { generateText } from '@rork/toolkit-sdk';

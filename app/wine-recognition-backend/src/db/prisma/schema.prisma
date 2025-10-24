@@ -1,0 +1,27 @@
+model Wine {
+  id        Int      @id @default(autoincrement())
+  name      String
+  region    String
+  varietal  String
+  year      Int
+  imageUrl  String?
+  pairings  Pairing[]
+}
+
+model Pairing {
+  id          Int      @id @default(autoincrement())
+  wineId      Int
+  food        String
+  expert      String?
+  community   String?
+  wine        Wine     @relation(fields: [wineId], references: [id])
+}
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  wineId    Int
+  userId    Int
+  rating    Int
+  comment   String?
+  wine      Wine     @relation(fields: [wineId], references: [id])
+}

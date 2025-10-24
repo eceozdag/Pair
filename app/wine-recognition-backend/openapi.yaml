@@ -1,0 +1,130 @@
+openapi: 3.0.0
+info:
+  title: Wine Recognition API
+  description: API for wine recognition and pairing suggestions using machine learning and community feedback.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+paths:
+  /wines:
+    get:
+      summary: Get a list of wines
+      responses:
+        '200':
+          description: A list of wines
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    region:
+                      type: string
+                    varietal:
+                      type: string
+    post:
+      summary: Add a new wine
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                region:
+                  type: string
+                varietal:
+                  type: string
+      responses:
+        '201':
+          description: Wine created
+  /pairings:
+    get:
+      summary: Get pairing suggestions
+      responses:
+        '200':
+          description: A list of pairing suggestions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    wineId:
+                      type: string
+                    food:
+                      type: string
+                    expertRecommendation:
+                      type: string
+    post:
+      summary: Add a new pairing suggestion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                wineId:
+                  type: string
+                food:
+                  type: string
+                expertRecommendation:
+                  type: string
+      responses:
+        '201':
+          description: Pairing suggestion created
+  /recognize:
+    post:
+      summary: Recognize a wine bottle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Recognized wine details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  region:
+                    type: string
+                  varietal:
+                    type: string
+  /feedback:
+    post:
+      summary: Submit user feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                wineId:
+                  type: string
+                feedback:
+                  type: string
+      responses:
+        '201':
+          description: Feedback submitted
