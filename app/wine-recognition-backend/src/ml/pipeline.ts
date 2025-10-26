@@ -15,16 +15,16 @@ class ML_Pipeline {
 
     async processWineImage(image: Buffer): Promise<any> {
         const wineData = await this.recognitionService.recognizeWine(image);
-        const pairings = await this.pairingService.getPairings(wineData);
+        const pairings = await this.pairingService.getAllPairings();
         return { wineData, pairings };
     }
 
-    async submitFeedback(wineId: string, feedback: any): Promise<void> {
-        await this.feedbackService.processFeedback(wineId, feedback);
+    async submitFeedback(feedbackData: { userId: string; pairingId: string; rating: number; comment?: string }): Promise<void> {
+        await this.feedbackService.submitFeedback(feedbackData);
     }
 
-    async getExpertPairings(wineId: string): Promise<any> {
-        return await this.pairingService.getExpertPairings(wineId);
+    async getExpertPairings(): Promise<any> {
+        return await this.pairingService.getExpertPairings();
     }
 }
 
