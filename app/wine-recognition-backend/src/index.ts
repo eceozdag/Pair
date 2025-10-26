@@ -1,17 +1,12 @@
-import express from 'express';
-import { json } from 'body-parser';
-import { createServer } from 'http';
-import { logger } from './utils/logger';
-import { apiRouter } from './api/routes';
+import dotenv from 'dotenv';
+import app from './app';
+import logger from './utils/logger';
 
-const app = express();
-const server = createServer(app);
+// Load environment variables
+dotenv.config();
 
-app.use(json());
-app.use('/api', apiRouter);
+const PORT = process.env.PORT || 3001;
 
-const PORT = process.env.PORT || 3000;
-
-server.listen(PORT, () => {
+app.listen(PORT, () => {
     logger.info(`Server is running on http://localhost:${PORT}`);
 });

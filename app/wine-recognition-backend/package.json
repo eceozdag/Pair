@@ -2,33 +2,37 @@
   "name": "wine-recognition-backend",
   "version": "1.0.0",
   "description": "Backend for a wine recognition app with machine learning pairing logic and computer vision.",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
+    "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
     "test": "jest",
     "lint": "eslint .",
     "deploy": "bash scripts/deploy.sh"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "prisma": "^2.30.0",
+    "@types/uuid": "^10.0.0",
+    "axios": "^1.6.0",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
-    "body-parser": "^1.19.0",
-    "multer": "^1.4.2",
-    "axios": "^0.21.1"
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "typescript": "^4.3.5",
-    "ts-node": "^10.2.1",
-    "jest": "^27.0.6",
-    "eslint": "^7.27.0",
-    "@types/jest": "^27.0.1",
-    "@types/node": "^16.7.10",
-    "@types/express": "^4.17.13"
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/multer": "^1.4.11",
+    "@types/node": "^20.10.6",
+    "nodemon": "^3.0.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "license": "MIT"
 }
