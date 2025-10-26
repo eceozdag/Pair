@@ -1,0 +1,18 @@
+[phases.setup]
+nixPkgs = ["nodejs-18_x"]
+
+[phases.install]
+# Change to backend directory before installing
+cmds = [
+  "cd app/wine-recognition-backend && npm install"
+]
+
+[phases.build]
+# Build from backend directory
+cmds = [
+  "cd app/wine-recognition-backend && npm run build"
+]
+
+[start]
+# Start from backend directory
+cmd = "cd app/wine-recognition-backend && npm start"
