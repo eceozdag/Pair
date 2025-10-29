@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import wineRoutes from './api/routes/wines';
 import pairingRoutes from './api/routes/pairings';
+import authRoutes from './api/routes/auth';
 import logger from './utils/logger';
 
 const app = express();
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 });
 
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/wines', wineRoutes);
 app.use('/api/pairings', pairingRoutes);
 

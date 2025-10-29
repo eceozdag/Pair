@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 export interface IUser extends Document {
     email: string;
@@ -23,6 +24,7 @@ export interface IUser extends Document {
     lastLoginAt?: Date;
     createdAt: Date;
     updatedAt: Date;
+    comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -58,6 +60,10 @@ const UserSchema = new Schema<IUser>({
         trim: true
     },
     preferences: {
+        bio: {
+            type: String,
+            trim: true
+        },
         favoriteWineTypes: [{
             type: String,
             trim: true
@@ -117,5 +123,35 @@ const UserSchema = new Schema<IUser>({
 // Create compound indexes for common queries
 UserSchema.index({ email: 1, isActive: 1 });
 UserSchema.index({ username: 1, isActive: 1 });
+
+// Pre-save middleware to hash password
+UserSchema.pre('save', async function(next) {
+    const user = this as IUser;
+    
+    // Only hash the password if it has been modified (or is new)
+    if (!user.isModified('passwordHash')) {
+        return next();
+    }
+    
+    try {
+        // Generate salt and hash password
+        if (user.passwordHash) {
+            const salt = await bcrypt.genSalt(10);
+            user.passwordHash = await bcrypt.hash(user.passwordHash, salt);
+        }
+        next();
+    } catch (error: any) {
+        next(error);
+    }
+});
+
+// Method to compare password
+UserSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
+    const user = this as IUser;
+    if (!user.passwordHash) {
+        return false;
+    }
+    return bcrypt.compare(candidatePassword, user.passwordHash);
+};
 
 export default mongoose.model<IUser>('User', UserSchema);

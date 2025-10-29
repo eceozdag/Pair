@@ -1,8 +1,9 @@
 import Colors from '../constants/colors';
 import { useRouter } from 'expo-router';
-import { Wine, Utensils, Users, User, TestTube } from 'lucide-react-native';
+import { Wine, Utensils, Users, User, TestTube, LogIn, UserPlus } from 'lucide-react-native';
 import React, { useState } from 'react';
 import MatchingDemo from '../components/MatchingDemo';
+import { useAuth } from '../contexts/AuthContext';
 import {
   View,
   Text,
@@ -11,6 +12,7 @@ import {
   ScrollView,
   Image,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -18,6 +20,77 @@ export default function HomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [showDemo, setShowDemo] = useState(false);
+  const { isAuthenticated, loading, user } = useAuth();
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.light.primary} />
+      </View>
+    );
+  }
+
+  // Show login/register screen if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <View style={styles.container}>
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top }]}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.authContainer}>
+            <View style={styles.authHeader}>
+              <Wine size={64} color={Colors.light.primary} />
+              <Text style={styles.authAppName}>WineMate</Text>
+              <Text style={styles.authTagline}>
+                Discover perfect wine and food pairings
+              </Text>
+            </View>
+
+            <Image
+              source={{ uri: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800' }}
+              style={styles.authHeroImage}
+            />
+
+            <View style={styles.authButtons}>
+              <TouchableOpacity
+                style={styles.loginButton}
+                onPress={() => router.push('/login')}
+              >
+                <LogIn size={20} color="#FFF" />
+                <Text style={styles.loginButtonText}>Sign In</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.registerButton}
+                onPress={() => router.push('/register')}
+              >
+                <UserPlus size={20} color={Colors.light.primary} />
+                <Text style={styles.registerButtonText}>Create Account</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.featuresPreview}>
+              <Text style={styles.featuresTitle}>Features</Text>
+              <View style={styles.featureItem}>
+                <Wine size={20} color={Colors.light.primary} />
+                <Text style={styles.featureText}>Scan wine labels</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Utensils size={20} color={Colors.light.primary} />
+                <Text style={styles.featureText}>Get pairing suggestions</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Users size={20} color={Colors.light.primary} />
+                <Text style={styles.featureText}>Join the community</Text>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 
   if (showDemo) {
     return <MatchingDemo />;
@@ -319,5 +392,102 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: Colors.light.textSecondary,
     lineHeight: 22,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.light.background,
+  },
+  authContainer: {
+    paddingHorizontal: 24,
+    paddingBottom: 40,
+  },
+  authHeader: {
+    alignItems: 'center',
+    marginTop: 40,
+    marginBottom: 32,
+  },
+  authAppName: {
+    fontSize: 40,
+    fontWeight: '700' as const,
+    color: Colors.light.primary,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  authTagline: {
+    fontSize: 16,
+    color: Colors.light.textSecondary,
+    textAlign: 'center',
+  },
+  authHeroImage: {
+    width: '100%',
+    height: 240,
+    borderRadius: 20,
+    marginBottom: 32,
+  },
+  authButtons: {
+    gap: 12,
+    marginBottom: 40,
+  },
+  loginButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: Colors.light.primary,
+    paddingVertical: 16,
+    borderRadius: 12,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
+  },
+  loginButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '600' as const,
+  },
+  registerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: Colors.light.card,
+    paddingVertical: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: Colors.light.primary,
+  },
+  registerButtonText: {
+    color: Colors.light.primary,
+    fontSize: 16,
+    fontWeight: '600' as const,
+  },
+  featuresPreview: {
+    gap: 16,
+  },
+  featuresTitle: {
+    fontSize: 20,
+    fontWeight: '700' as const,
+    color: Colors.light.text,
+    marginBottom: 8,
+  },
+  featureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 8,
+  },
+  featureText: {
+    fontSize: 16,
+    color: Colors.light.text,
   },
 });
