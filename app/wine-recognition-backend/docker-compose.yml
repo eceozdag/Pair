@@ -6,23 +6,25 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
-      - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
+      - NODE_ENV=development
+      - PORT=3001
+      - MONGODB_URI=mongodb://mongodb:27017/pair_wine_db
+      - JWT_SECRET=${JWT_SECRET:-change-this-secret-key}
     volumes:
       - .:/app
     depends_on:
-      - db
+      - mongodb
 
-  db:
-    image: postgres:13
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=pair_wine_db
 
 volumes:
-  postgres_data:
+  mongodb_data:

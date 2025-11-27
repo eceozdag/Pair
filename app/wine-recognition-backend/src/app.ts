@@ -9,7 +9,20 @@ import logger from './utils/logger';
 const app = express();
 
 // Middleware
-app.use(cors());
+// Configure CORS with allowed origins from environment
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:19006', 'exp://localhost:19000', 'http://localhost:3000'];
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use((req, res, next) => {

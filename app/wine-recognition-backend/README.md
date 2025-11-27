@@ -35,28 +35,45 @@ This project is a backend service for a wine recognition application that utiliz
 
 ## Getting Started
 
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd wine-recognition-backend
-   ```
+For detailed local development setup instructions, see [LOCAL_SETUP.md](../../LOCAL_SETUP.md) in the project root.
 
-2. Install dependencies:
-   ```
+### Quick Start
+
+1. Install dependencies:
+   ```bash
    npm install
    ```
 
-3. Set up the machine learning environment:
+2. Create a `.env` file with your configuration:
+   ```env
+   PORT=3001
+   NODE_ENV=development
+   MONGODB_URI=mongodb://localhost:27017/pair_wine_db
+   JWT_SECRET=your-secret-key-here
    ```
-   ./scripts/setup_ml_env.sh
+
+3. Start MongoDB (using Docker):
+   ```bash
+   docker run -d -p 27017:27017 --name mongodb mongo:latest
    ```
 
 4. Start the application:
-   ```
+   ```bash
+   # Development mode (with hot reload)
+   npm run dev
+   
+   # Production mode
    npm start
    ```
 
-5. Access the API documentation at `http://localhost:3000/api-docs`.
+5. The API will be available at `http://localhost:3001`
+
+### Using Docker Compose
+
+You can also use Docker Compose to run both the app and MongoDB:
+```bash
+docker-compose up
+```
 
 ## Contributing
 
