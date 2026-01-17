@@ -1,19 +1,18 @@
 import { Router } from 'express';
-import { WineController } from '../controllers/wineController';
+import { getAllWines, getWine, addWine, updateWine } from '../controllers/wineController';
 
 const router = Router();
-const wineController = new WineController();
 
 // Get all wines
-router.get('/', wineController.getAllWines.bind(wineController));
+router.get('/', getAllWines);
 
 // Get single wine by ID
-router.get('/:id', wineController.getWine.bind(wineController));
+router.get('/:id', getWine);
 
 // Add new wine
-router.post('/', wineController.addWine.bind(wineController));
+router.post('/', addWine);
 
 // Update wine
-router.put('/:id', wineController.updateWine.bind(wineController));
+router.put('/:id', updateWine);
 
 export default router;

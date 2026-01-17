@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../../models/User';
 import { AuthRequest } from '../../middleware/auth';
+import logger from '../../utils/logger';
 
 // Generate JWT token
 const generateToken = (userId: string): string => {
@@ -81,7 +82,7 @@ export const register = async (req: Request, res: Response) => {
             }
         });
     } catch (error: any) {
-        console.error('Registration error:', error);
+        logger.error('Registration error:', error);
         res.status(500).json({ 
             success: false, 
             message: 'Error creating user.', 
@@ -160,7 +161,7 @@ export const login = async (req: Request, res: Response) => {
             }
         });
     } catch (error: any) {
-        console.error('Login error:', error);
+        logger.error('Login error:', error);
         res.status(500).json({ 
             success: false, 
             message: 'Error logging in.', 
@@ -195,7 +196,7 @@ export const getMe = async (req: AuthRequest, res: Response) => {
             }
         });
     } catch (error: any) {
-        console.error('Get profile error:', error);
+        logger.error('Get profile error:', error);
         res.status(500).json({ 
             success: false, 
             message: 'Error fetching profile.', 
@@ -257,7 +258,7 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
             }
         });
     } catch (error: any) {
-        console.error('Update profile error:', error);
+        logger.error('Update profile error:', error);
         res.status(500).json({ 
             success: false, 
             message: 'Error updating profile.', 
@@ -321,7 +322,7 @@ export const changePassword = async (req: AuthRequest, res: Response) => {
             message: 'Password changed successfully.'
         });
     } catch (error: any) {
-        console.error('Change password error:', error);
+        logger.error('Change password error:', error);
         res.status(500).json({ 
             success: false, 
             message: 'Error changing password.', 
