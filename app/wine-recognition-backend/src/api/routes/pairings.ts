@@ -1,16 +1,15 @@
 import { Router } from 'express';
-import { PairingController } from '../controllers/pairingController';
+import { getPairings, addPairing, getExpertPairings } from '../controllers/pairingController';
 
 const router = Router();
-const pairingController = new PairingController();
+
+// Route to get expert pairings (must come before general GET to avoid route collision)
+router.get('/expert', getExpertPairings);
 
 // Route to get all pairings
-router.get('/', pairingController.getPairings.bind(pairingController));
+router.get('/', getPairings);
 
 // Route to add a new pairing
-router.post('/', pairingController.addPairing.bind(pairingController));
-
-// Route to get expert pairings
-router.get('/expert', pairingController.getExpertPairings.bind(pairingController));
+router.post('/', addPairing);
 
 export default router;

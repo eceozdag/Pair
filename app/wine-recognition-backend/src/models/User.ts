@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export interface IUser extends Document {
+    _id: mongoose.Types.ObjectId;
     email: string;
     username: string;
     passwordHash?: string;
@@ -126,18 +127,16 @@ UserSchema.index({ username: 1, isActive: 1 });
 
 // Pre-save middleware to hash password
 UserSchema.pre('save', async function(next) {
-    const user = this as IUser;
-    
-    // Only hash the password if it has been modified (or is new)
-    if (!user.isModified('passwordHash')) {
+    // 'this' refers to the document being saved
+    if (!this.isModified('passwordHash')) {
         return next();
     }
-    
+
     try {
         // Generate salt and hash password
-        if (user.passwordHash) {
+        if (this.passwordHash) {
             const salt = await bcrypt.genSalt(10);
-            user.passwordHash = await bcrypt.hash(user.passwordHash, salt);
+            this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
         }
         next();
     } catch (error: any) {
