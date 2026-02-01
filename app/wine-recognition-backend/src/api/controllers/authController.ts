@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import User from '../../models/User';
 import { AuthRequest } from '../../middleware/auth';
 import logger from '../../utils/logger';
+import { sendPasswordResetEmail } from '../../services/emailService';
 
 // Generate JWT token
 const generateToken = (userId: string): string => {
@@ -323,10 +325,119 @@ export const changePassword = async (req: AuthRequest, res: Response) => {
         });
     } catch (error: any) {
         logger.error('Change password error:', error);
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error changing password.', 
-            error: error.message 
+        res.status(500).json({
+            success: false,
+            message: 'Error changing password.',
+            error: error.message
+        });
+    }
+};
+
+// Request password reset
+export const forgotPassword = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email is required.'
+            });
+        }
+
+        const user = await User.findOne({ email: email.toLowerCase() });
+
+        if (!user) {
+            // Don't reveal if user exists - always return success
+            return res.json({
+                success: true,
+                message: 'If an account with that email exists, a reset link has been sent.'
+            });
+        }
+
+        // Generate 6-digit reset code
+        const resetToken = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Hash the token before storing
+        const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+        // Save to user
+        user.resetPasswordToken = hashedToken;
+        user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+        await user.save();
+
+        // Create reset URL (for deep linking in the app)
+        const resetUrl = `winemate://reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
+
+        // Send email
+        await sendPasswordResetEmail(email, resetToken, resetUrl);
+
+        res.json({
+            success: true,
+            message: 'If an account with that email exists, a reset link has been sent.'
+        });
+    } catch (error: any) {
+        logger.error('Forgot password error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error processing request.',
+            error: error.message
+        });
+    }
+};
+
+// Reset password with token
+export const resetPassword = async (req: Request, res: Response) => {
+    try {
+        const { email, token, newPassword } = req.body;
+
+        if (!email || !token || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email, token, and new password are required.'
+            });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password must be at least 6 characters long.'
+            });
+        }
+
+        // Hash the provided token to compare
+        const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+        // Find user with valid reset token
+        const user = await User.findOne({
+            email: email.toLowerCase(),
+            resetPasswordToken: hashedToken,
+            resetPasswordExpires: { $gt: new Date() }
+        }).select('+resetPasswordToken +resetPasswordExpires');
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid or expired reset token.'
+            });
+        }
+
+        // Update password
+        user.passwordHash = newPassword; // Will be hashed by pre-save middleware
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+
+        res.json({
+            success: true,
+            message: 'Password has been reset successfully. You can now login with your new password.'
+        });
+    } catch (error: any) {
+        logger.error('Reset password error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error resetting password.',
+            error: error.message
         });
     }
 };

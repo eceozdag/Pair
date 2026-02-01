@@ -24,10 +24,15 @@ interface WineData {
   region: string;
   vintage?: string;
   grapeVariety?: string;
+  confidence?: number;
+  foodPairings?: string[]; // From backend API
 }
 
 interface FoodData {
   food: string;
+  confidence?: number;
+  allDetections?: string[];
+  winePairings?: string[]; // From backend API
 }
 
 export default function PairingResultsScreen() {
@@ -66,16 +71,21 @@ export default function PairingResultsScreen() {
     }
 
     if (type === 'food' && foodData) {
-      // Use enhanced matching logic
+      // Priority 1: Use pairings from backend API (Google Vision + matching service)
+      if (foodData.winePairings && foodData.winePairings.length > 0) {
+        console.log('Using API wine pairings:', foodData.winePairings);
+        return foodData.winePairings;
+      }
+
+      // Priority 2: Use enhanced local matching logic
       const smartPairings = findWinePairings(foodData.food);
       console.log('Smart pairings:', smartPairings);
-      
-      // If we have good smart pairings, use them
+
       if (smartPairings.wines.length > 0) {
         return smartPairings.wines;
       }
 
-      // Fallback to original logic
+      // Priority 3: Fallback to original logic
       const food = foodData.food.toLowerCase();
       for (const [key, wines] of Object.entries(foodWinePairings)) {
         if (food.includes(key) || key.includes(food.split(' ')[0])) {
@@ -83,6 +93,7 @@ export default function PairingResultsScreen() {
         }
       }
 
+      // Priority 4: AI mutation as last resort
       if (aiMutation.data) {
         return aiMutation.data as string[];
       }
@@ -100,15 +111,21 @@ export default function PairingResultsScreen() {
   const suggestedFoods = useMemo(() => {
     if (type === 'food' || !wineData) return [];
 
-    // Use enhanced matching logic for wine-to-food pairings
+    // Priority 1: Use pairings from backend API (Google Vision + matching service)
+    if (wineData.foodPairings && wineData.foodPairings.length > 0) {
+      console.log('Using API food pairings:', wineData.foodPairings);
+      return wineData.foodPairings;
+    }
+
+    // Priority 2: Use enhanced local matching logic
     const smartPairings = findFoodPairings(wineData.name);
     console.log('Smart food pairings:', smartPairings);
-    
+
     if (smartPairings.foods.length > 0) {
       return smartPairings.foods;
     }
 
-    // Fallback to original logic
+    // Priority 3: Fallback to original logic
     const wineType = wineData.grapeVariety || wineData.type;
     const foods: string[] = [];
 

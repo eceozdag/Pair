@@ -1,0 +1,238 @@
+{
+  "wines": [
+    {
+      "id": "cab_sauv_001",
+      "name": "Cabernet Sauvignon",
+      "alternativeNames": ["Cab Sauv", "Cabernet"],
+      "type": "red",
+      "grapeVariety": "Cabernet Sauvignon",
+      "commonRegions": ["Napa Valley", "Bordeaux", "Paso Robles", "Margaret River"],
+      "characteristics": {
+        "body": "full",
+        "tannin": "high",
+        "acidity": "medium-high",
+        "alcohol": "13.5-15%"
+      },
+      "aromas": ["blackcurrant", "black cherry", "cedar", "tobacco", "vanilla", "oak"],
+      "pairings": ["steak", "beef", "lamb", "cheese"]
+    },
+    {
+      "id": "pinot_noir_001",
+      "name": "Pinot Noir",
+      "alternativeNames": ["Pinot"],
+      "type": "red",
+      "grapeVariety": "Pinot Noir",
+      "commonRegions": ["Burgundy", "Oregon", "California", "New Zealand"],
+      "characteristics": {
+        "body": "light-medium",
+        "tannin": "low-medium",
+        "acidity": "high",
+        "alcohol": "12-14%"
+      },
+      "aromas": ["cherry", "raspberry", "mushroom", "earth", "vanilla"],
+      "pairings": ["salmon", "duck", "chicken", "pork", "cheese"]
+    },
+    {
+      "id": "chardonnay_001",
+      "name": "Chardonnay",
+      "alternativeNames": ["Chard"],
+      "type": "white",
+      "grapeVariety": "Chardonnay",
+      "commonRegions": ["Burgundy", "California", "Australia", "Chile"],
+      "characteristics": {
+        "body": "medium-full",
+        "acidity": "medium",
+        "alcohol": "13-14.5%"
+      },
+      "aromas": ["apple", "pear", "butter", "vanilla", "toast", "tropical fruit"],
+      "pairings": ["chicken", "lobster", "fish", "pasta", "cheese"]
+    },
+    {
+      "id": "sauv_blanc_001",
+      "name": "Sauvignon Blanc",
+      "alternativeNames": ["Sauv Blanc", "Sauvignon"],
+      "type": "white",
+      "grapeVariety": "Sauvignon Blanc",
+      "commonRegions": ["Marlborough", "Loire Valley", "California", "Chile"],
+      "characteristics": {
+        "body": "light-medium",
+        "acidity": "high",
+        "alcohol": "12-13.5%"
+      },
+      "aromas": ["lime", "grapefruit", "passion fruit", "grass", "bell pepper"],
+      "pairings": ["fish", "salad", "vegetables", "sushi", "chicken"]
+    },
+    {
+      "id": "merlot_001",
+      "name": "Merlot",
+      "alternativeNames": [],
+      "type": "red",
+      "grapeVariety": "Merlot",
+      "commonRegions": ["Bordeaux", "California", "Washington", "Chile"],
+      "characteristics": {
+        "body": "medium-full",
+        "tannin": "medium",
+        "acidity": "medium",
+        "alcohol": "13.5-14.5%"
+      },
+      "aromas": ["plum", "black cherry", "chocolate", "vanilla", "cedar"],
+      "pairings": ["beef", "lamb", "pork", "pasta", "pizza"]
+    },
+    {
+      "id": "malbec_001",
+      "name": "Malbec",
+      "alternativeNames": [],
+      "type": "red",
+      "grapeVariety": "Malbec",
+      "commonRegions": ["Mendoza", "Cahors", "California"],
+      "characteristics": {
+        "body": "full",
+        "tannin": "medium-high",
+        "acidity": "medium",
+        "alcohol": "13.5-15%"
+      },
+      "aromas": ["blackberry", "plum", "black cherry", "chocolate", "tobacco"],
+      "pairings": ["steak", "burger", "beef", "lamb"]
+    },
+    {
+      "id": "syrah_001",
+      "name": "Syrah",
+      "alternativeNames": ["Shiraz"],
+      "type": "red",
+      "grapeVariety": "Syrah",
+      "commonRegions": ["Rhône Valley", "Australia", "California", "Washington"],
+      "characteristics": {
+        "body": "full",
+        "tannin": "medium-high",
+        "acidity": "medium",
+        "alcohol": "14-15%"
+      },
+      "aromas": ["blackberry", "blueberry", "pepper", "smoke", "bacon", "olive"],
+      "pairings": ["lamb", "beef", "duck", "steak", "burger"]
+    },
+    {
+      "id": "riesling_001",
+      "name": "Riesling",
+      "alternativeNames": [],
+      "type": "white",
+      "grapeVariety": "Riesling",
+      "commonRegions": ["Germany", "Alsace", "Australia", "Washington"],
+      "characteristics": {
+        "body": "light-medium",
+        "acidity": "high",
+        "sweetness": "varies (dry to sweet)",
+        "alcohol": "8-12%"
+      },
+      "aromas": ["apple", "peach", "lime", "honey", "petrol", "jasmine"],
+      "pairings": ["spicy", "curry", "sushi", "pork", "chicken"]
+    },
+    {
+      "id": "pinot_grigio_001",
+      "name": "Pinot Grigio",
+      "alternativeNames": ["Pinot Gris"],
+      "type": "white",
+      "grapeVariety": "Pinot Grigio",
+      "commonRegions": ["Italy", "Alsace", "Oregon", "California"],
+      "characteristics": {
+        "body": "light",
+        "acidity": "high",
+        "alcohol": "12-13%"
+      },
+      "aromas": ["lemon", "lime", "pear", "white flowers", "almond"],
+      "pairings": ["fish", "pasta", "salad", "vegetables", "pizza"]
+    },
+    {
+      "id": "zinfandel_001",
+      "name": "Zinfandel",
+      "alternativeNames": ["Zin", "Primitivo"],
+      "type": "red",
+      "grapeVariety": "Zinfandel",
+      "commonRegions": ["California", "Puglia"],
+      "characteristics": {
+        "body": "medium-full",
+        "tannin": "medium",
+        "acidity": "medium",
+        "alcohol": "14-17%"
+      },
+      "aromas": ["blackberry", "raspberry", "black pepper", "clove", "licorice"],
+      "pairings": ["burger", "pizza", "beef", "duck", "chocolate"]
+    },
+    {
+      "id": "champagne_001",
+      "name": "Champagne",
+      "alternativeNames": ["Sparkling Wine", "Prosecco", "Cava"],
+      "type": "sparkling",
+      "grapeVariety": "Chardonnay, Pinot Noir, Pinot Meunier",
+      "commonRegions": ["Champagne", "Italy", "Spain", "California"],
+      "characteristics": {
+        "body": "light-medium",
+        "acidity": "high",
+        "alcohol": "12-13%"
+      },
+      "aromas": ["citrus", "apple", "toast", "brioche", "almond"],
+      "pairings": ["sushi", "shrimp", "lobster", "cheese", "dessert"]
+    },
+    {
+      "id": "chianti_001",
+      "name": "Chianti",
+      "alternativeNames": ["Sangiovese"],
+      "type": "red",
+      "grapeVariety": "Sangiovese",
+      "commonRegions": ["Tuscany", "Italy"],
+      "characteristics": {
+        "body": "medium",
+        "tannin": "medium-high",
+        "acidity": "high",
+        "alcohol": "12-14%"
+      },
+      "aromas": ["cherry", "strawberry", "herbs", "tobacco", "leather"],
+      "pairings": ["pasta", "pizza", "chicken", "cheese"]
+    },
+    {
+      "id": "rose_001",
+      "name": "Rosé",
+      "alternativeNames": ["Rose", "Pink Wine"],
+      "type": "rosé",
+      "grapeVariety": "Various (Grenache, Pinot Noir, Syrah)",
+      "commonRegions": ["Provence", "California", "Spain", "Italy"],
+      "characteristics": {
+        "body": "light-medium",
+        "acidity": "medium-high",
+        "alcohol": "11-13%"
+      },
+      "aromas": ["strawberry", "watermelon", "citrus", "flowers", "herbs"],
+      "pairings": ["salad", "fish", "vegetables", "chicken", "cheese"]
+    },
+    {
+      "id": "port_001",
+      "name": "Port",
+      "alternativeNames": ["Porto", "Fortified Wine"],
+      "type": "fortified",
+      "grapeVariety": "Touriga Nacional, Tinta Roriz, Touriga Franca",
+      "commonRegions": ["Douro Valley", "Portugal"],
+      "characteristics": {
+        "body": "full",
+        "sweetness": "sweet",
+        "alcohol": "19-22%"
+      },
+      "aromas": ["blackberry", "chocolate", "caramel", "spice", "nuts"],
+      "pairings": ["chocolate", "cheese", "dessert"]
+    },
+    {
+      "id": "moscato_001",
+      "name": "Moscato",
+      "alternativeNames": ["Muscat", "Moscato d'Asti"],
+      "type": "white",
+      "grapeVariety": "Muscat",
+      "commonRegions": ["Asti", "California", "Australia"],
+      "characteristics": {
+        "body": "light",
+        "sweetness": "sweet",
+        "acidity": "medium",
+        "alcohol": "5-7%"
+      },
+      "aromas": ["peach", "apricot", "orange blossom", "honey", "jasmine"],
+      "pairings": ["dessert", "fruit", "spicy"]
+    }
+  ]
+}

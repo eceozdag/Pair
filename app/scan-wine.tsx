@@ -1,5 +1,5 @@
 import Colors from '../constants/colors';
-// import { generateText } from '@rork/toolkit-sdk';
+import API_CONFIG from './config/api';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
@@ -35,8 +35,8 @@ export default function ScanWineScreen() {
         quality: 0.8,
       });
 
-      if (photo?.base64) {
-        await analyzeWine(photo.base64);
+      if (photo?.uri) {
+        await analyzeWine(photo.base64 || '', photo.uri);
       }
     } catch (error) {
       console.error('Error capturing photo:', error);
@@ -53,37 +53,61 @@ export default function ScanWineScreen() {
       base64: true,
     });
 
-    if (!result.canceled && result.assets[0].base64) {
-      await analyzeWine(result.assets[0].base64);
+    if (!result.canceled && result.assets[0]) {
+      await analyzeWine(result.assets[0].base64 || '', result.assets[0].uri);
     }
   };
 
-  const analyzeWine = async (base64: string) => {
+  const analyzeWine = async (base64: string, uri?: string) => {
     try {
       setAnalyzing(true);
 
-      // Mock implementation - in a real app, this would use AI to analyze the wine label
-      const mockWines = [
-        { name: 'Cabernet Sauvignon', type: 'red', region: 'Napa Valley', vintage: '2020', grapeVariety: 'Cabernet Sauvignon' },
-        { name: 'Chardonnay', type: 'white', region: 'Burgundy', vintage: '2021', grapeVariety: 'Chardonnay' },
-        { name: 'Pinot Noir', type: 'red', region: 'Oregon', vintage: '2019', grapeVariety: 'Pinot Noir' },
-        { name: 'Sauvignon Blanc', type: 'white', region: 'New Zealand', vintage: '2022', grapeVariety: 'Sauvignon Blanc' },
-        { name: 'Malbec', type: 'red', region: 'Argentina', vintage: '2020', grapeVariety: 'Malbec' }
-      ];
-      
-      const randomWine = mockWines[Math.floor(Math.random() * mockWines.length)];
-      console.log('Mock AI Response:', randomWine);
+      // Create FormData for image upload
+      const formData = new FormData();
+
+      // Convert base64 to blob for upload
+      const imageUri = uri || `data:image/jpeg;base64,${base64}`;
+      formData.append('image', {
+        uri: imageUri,
+        type: 'image/jpeg',
+        name: 'wine-label.jpg',
+      } as any);
+
+      const response = await fetch(`${API_CONFIG.apiUrl}/recognition/wine`, {
+        method: 'POST',
+        body: formData,
+        // Don't set Content-Type - React Native sets it automatically with correct boundary
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to analyze wine');
+      }
+
+      const wineData = {
+        name: result.data.wine.name,
+        type: result.data.wine.grapeVariety?.toLowerCase().includes('chardonnay') ||
+              result.data.wine.grapeVariety?.toLowerCase().includes('sauvignon blanc') ? 'white' : 'red',
+        region: result.data.wine.region || 'Unknown',
+        vintage: result.data.wine.vintage?.toString() || '',
+        grapeVariety: result.data.wine.grapeVariety || '',
+        confidence: result.data.wine.confidence,
+        foodPairings: result.data.foodPairings,
+      };
+
+      console.log('Wine Recognition Result:', wineData);
 
       router.push({
         pathname: '/pairing-results',
         params: {
           type: 'wine',
-          data: JSON.stringify(randomWine),
+          data: JSON.stringify(wineData),
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error analyzing wine:', error);
-      Alert.alert('Error', 'Failed to analyze wine. Please try again.');
+      Alert.alert('Error', error.message || 'Failed to analyze wine. Please try again.');
     } finally {
       setAnalyzing(false);
     }

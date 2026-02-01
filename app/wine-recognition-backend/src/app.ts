@@ -4,23 +4,16 @@ import cors from 'cors';
 import wineRoutes from './api/routes/wines';
 import pairingRoutes from './api/routes/pairings';
 import authRoutes from './api/routes/auth';
+import recognitionRoutes from './api/routes/recognition';
 import logger from './utils/logger';
 
 const app = express();
 
 // Middleware
-// Configure CORS with allowed origins from environment
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:19006', 'exp://localhost:19000', 'http://localhost:3000'];
+// In development, allow all origins for easier testing
+const isDev = process.env.NODE_ENV !== 'production';
 app.use(cors({
-    origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps or curl)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin: isDev ? true : (process.env.ALLOWED_ORIGINS?.split(',') || []),
     credentials: true
 }));
 app.use(bodyParser.json());
@@ -39,6 +32,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/wines', wineRoutes);
 app.use('/api/pairings', pairingRoutes);
+app.use('/api/recognition', recognitionRoutes);
 
 // Error handling
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

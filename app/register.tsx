@@ -14,10 +14,18 @@ import {
 import { useRouter } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
 
+const showAlert = (title: string, message: string) => {
+  if (Platform.OS === 'web') {
+    window.alert(`${title}: ${message}`);
+  } else {
+    Alert.alert(title, message);
+  }
+};
+
 export default function RegisterScreen() {
   const router = useRouter();
   const { register } = useAuth();
-  
+
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -25,37 +33,49 @@ export default function RegisterScreen() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleRegister = async () => {
+    setError('');
+
     // Validation
     if (!email || !username || !password) {
-      Alert.alert('Error', 'Please fill in all required fields');
+      setError('Please fill in all required fields');
+      showAlert('Error', 'Please fill in all required fields');
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      setError('Passwords do not match');
+      showAlert('Error', 'Passwords do not match');
       return;
     }
 
     if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters long');
+      setError('Password must be at least 6 characters long');
+      showAlert('Error', 'Password must be at least 6 characters long');
       return;
     }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      Alert.alert('Error', 'Please enter a valid email address');
+      setError('Please enter a valid email address');
+      showAlert('Error', 'Please enter a valid email address');
       return;
     }
 
     setLoading(true);
     try {
+      console.log('Attempting registration...');
       await register(email, username, password, firstName, lastName);
+      console.log('Registration successful!');
       router.replace('/');
     } catch (error: any) {
-      Alert.alert('Registration Failed', error.message || 'Unable to create account');
+      console.error('Registration error:', error);
+      const errorMessage = error.message || 'Unable to create account';
+      setError(errorMessage);
+      showAlert('Registration Failed', errorMessage);
     } finally {
       setLoading(false);
     }
@@ -73,6 +93,8 @@ export default function RegisterScreen() {
         <View style={styles.content}>
           <Text style={styles.title}>Create Account</Text>
           <Text style={styles.subtitle}>Join WineMate today</Text>
+
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
           <View style={styles.form}>
             <TextInput
@@ -182,7 +204,16 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 32,
+    marginBottom: 16,
+  },
+  errorText: {
+    color: '#D32F2F',
+    fontSize: 14,
+    marginBottom: 16,
+    textAlign: 'center',
+    backgroundColor: '#FFEBEE',
+    padding: 12,
+    borderRadius: 8,
   },
   form: {
     width: '100%',

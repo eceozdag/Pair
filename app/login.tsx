@@ -13,26 +13,43 @@ import {
 import { useRouter } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
 
+const showAlert = (title: string, message: string) => {
+  if (Platform.OS === 'web') {
+    window.alert(`${title}: ${message}`);
+  } else {
+    Alert.alert(title, message);
+  }
+};
+
 export default function LoginScreen() {
   const router = useRouter();
   const { login } = useAuth();
-  
+
   const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleLogin = async () => {
+    setError('');
+
     if (!emailOrUsername || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+      setError('Please fill in all fields');
+      showAlert('Error', 'Please fill in all fields');
       return;
     }
 
     setLoading(true);
     try {
+      console.log('Attempting login...');
       await login(emailOrUsername, password);
+      console.log('Login successful!');
       router.replace('/');
     } catch (error: any) {
-      Alert.alert('Login Failed', error.message || 'Invalid credentials');
+      console.error('Login error:', error);
+      const errorMessage = error.message || 'Invalid credentials';
+      setError(errorMessage);
+      showAlert('Login Failed', errorMessage);
     } finally {
       setLoading(false);
     }
@@ -46,6 +63,8 @@ export default function LoginScreen() {
       <View style={styles.content}>
         <Text style={styles.title}>Welcome Back</Text>
         <Text style={styles.subtitle}>Sign in to continue</Text>
+
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
         <View style={styles.form}>
           <TextInput
@@ -81,6 +100,13 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
+            style={styles.forgotButton}
+            onPress={() => router.push('/forgot-password')}
+          >
+            <Text style={styles.forgotText}>Forgot Password?</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={styles.linkButton}
             onPress={() => router.push('/register')}
           >
@@ -113,7 +139,16 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 32,
+    marginBottom: 16,
+  },
+  errorText: {
+    color: '#D32F2F',
+    fontSize: 14,
+    marginBottom: 16,
+    textAlign: 'center',
+    backgroundColor: '#FFEBEE',
+    padding: 12,
+    borderRadius: 8,
   },
   form: {
     width: '100%',
@@ -141,6 +176,15 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+  forgotButton: {
+    marginTop: 16,
+    alignItems: 'center',
+  },
+  forgotText: {
+    color: '#8B2635',
+    fontSize: 14,
+    fontWeight: '500',
   },
   linkButton: {
     marginTop: 16,

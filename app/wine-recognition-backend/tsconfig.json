@@ -9,10 +9,21 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": "./src",
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
     "paths": {
-      "*": ["node_modules/*", "*"]
+      "*": [
+        "node_modules/*",
+        "*"
+      ]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ],
+  "extends": "expo/tsconfig.base"
 }

@@ -1,5 +1,5 @@
 import Colors from '../constants/colors';
-// import { generateText } from '@rork/toolkit-sdk';
+import API_CONFIG from './config/api';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
@@ -53,8 +53,8 @@ export default function FindFoodScreen() {
         quality: 0.8,
       });
 
-      if (photo?.base64) {
-        await analyzeFood(photo.base64);
+      if (photo?.uri) {
+        await analyzeFood(photo.base64 || '', photo.uri);
       }
     } catch (error) {
       console.error('Error capturing photo:', error);
@@ -71,21 +71,44 @@ export default function FindFoodScreen() {
       base64: true,
     });
 
-    if (!result.canceled && result.assets[0].base64) {
-      await analyzeFood(result.assets[0].base64);
+    if (!result.canceled && result.assets[0]) {
+      await analyzeFood(result.assets[0].base64 || '', result.assets[0].uri);
     }
   };
 
-  const analyzeFood = async (base64: string) => {
+  const analyzeFood = async (base64: string, uri?: string) => {
     try {
       setAnalyzing(true);
 
-      // Mock implementation - in a real app, this would use AI to analyze the image
-      const mockFoods = ['grilled salmon', 'steak', 'pasta carbonara', 'chicken breast', 'pizza', 'salad'];
-      const randomFood = mockFoods[Math.floor(Math.random() * mockFoods.length)];
-      
-      const foodData = { food: randomFood };
-      console.log('Mock AI Response:', foodData);
+      // Create FormData for image upload
+      const formData = new FormData();
+      const imageUri = uri || `data:image/jpeg;base64,${base64}`;
+      formData.append('image', {
+        uri: imageUri,
+        type: 'image/jpeg',
+        name: 'food-photo.jpg',
+      } as any);
+
+      const response = await fetch(`${API_CONFIG.apiUrl}/recognition/food`, {
+        method: 'POST',
+        body: formData,
+        // Don't set Content-Type - React Native sets it automatically with correct boundary
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to analyze food');
+      }
+
+      const foodData = {
+        food: result.data.food.name,
+        confidence: result.data.food.confidence,
+        allDetections: result.data.food.allDetections,
+        winePairings: result.data.winePairings,
+      };
+
+      console.log('Food Recognition Result:', foodData);
 
       router.push({
         pathname: '/pairing-results',
@@ -94,9 +117,9 @@ export default function FindFoodScreen() {
           data: JSON.stringify(foodData),
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error analyzing food:', error);
-      Alert.alert('Error', 'Failed to analyze food. Please try again.');
+      Alert.alert('Error', error.message || 'Failed to analyze food. Please try again.');
     } finally {
       setAnalyzing(false);
       setShowCamera(false);
